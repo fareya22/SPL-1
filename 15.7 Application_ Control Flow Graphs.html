@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<!-- saved from url=(0095)https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>15.7 Application: Control Flow Graphs</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="./15.7 Application_ Control Flow Graphs_files/tufte.css">
+  <script src="./15.7 Application_ Control Flow Graphs_files/tex-mml-chtml.js.download" type="text/javascript"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
+.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
+.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
+</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
+.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
+.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
+.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
+.CtxtMenu_MenuClose:hover:focus {  outline:none}
+</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
+.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
+.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
+.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
+.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
+.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
+.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
+.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
+.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
+.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
+.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
+.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
+.CtxtMenu_MenuSlider {  left: .1em;}
+.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
+.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
+.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
+.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
+.CtxtMenu_MenuDisabled {  color:GrayText}
+.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
+.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
+.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
+.CtxtMenu_ContextMenu:focus {  outline:none}
+.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
+.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
+.CtxtMenu_SelectionItem {  padding-right: 1em;}
+.CtxtMenu_Selection {  right: 40%; width:50%; }
+.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
+.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
+.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
+</style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+<style id="MJX-CHTML-styles">
+mjx-container[jax="CHTML"] {
+  line-height: 0;
+}
+
+mjx-container [space="1"] {
+  margin-left: .111em;
+}
+
+mjx-container [space="2"] {
+  margin-left: .167em;
+}
+
+mjx-container [space="3"] {
+  margin-left: .222em;
+}
+
+mjx-container [space="4"] {
+  margin-left: .278em;
+}
+
+mjx-container [space="5"] {
+  margin-left: .333em;
+}
+
+mjx-container [rspace="1"] {
+  margin-right: .111em;
+}
+
+mjx-container [rspace="2"] {
+  margin-right: .167em;
+}
+
+mjx-container [rspace="3"] {
+  margin-right: .222em;
+}
+
+mjx-container [rspace="4"] {
+  margin-right: .278em;
+}
+
+mjx-container [rspace="5"] {
+  margin-right: .333em;
+}
+
+mjx-container [size="s"] {
+  font-size: 70.7%;
+}
+
+mjx-container [size="ss"] {
+  font-size: 50%;
+}
+
+mjx-container [size="Tn"] {
+  font-size: 60%;
+}
+
+mjx-container [size="sm"] {
+  font-size: 85%;
+}
+
+mjx-container [size="lg"] {
+  font-size: 120%;
+}
+
+mjx-container [size="Lg"] {
+  font-size: 144%;
+}
+
+mjx-container [size="LG"] {
+  font-size: 173%;
+}
+
+mjx-container [size="hg"] {
+  font-size: 207%;
+}
+
+mjx-container [size="HG"] {
+  font-size: 249%;
+}
+
+mjx-container [width="full"] {
+  width: 100%;
+}
+
+mjx-box {
+  display: inline-block;
+}
+
+mjx-block {
+  display: block;
+}
+
+mjx-itable {
+  display: inline-table;
+}
+
+mjx-row {
+  display: table-row;
+}
+
+mjx-row > * {
+  display: table-cell;
+}
+
+mjx-mtext {
+  display: inline-block;
+}
+
+mjx-mstyle {
+  display: inline-block;
+}
+
+mjx-merror {
+  display: inline-block;
+  color: red;
+  background-color: yellow;
+}
+
+mjx-mphantom {
+  visibility: hidden;
+}
+
+_::-webkit-full-page-media, _:future, :root mjx-container {
+  will-change: opacity;
+}
+
+mjx-assistive-mml {
+  position: absolute !important;
+  top: 0px;
+  left: 0px;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 1px 0px 0px 0px !important;
+  border: 0px !important;
+  display: block !important;
+  width: auto !important;
+  overflow: hidden !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mjx-assistive-mml[display="block"] {
+  width: 100% !important;
+}
+
+mjx-math {
+  display: inline-block;
+  text-align: left;
+  line-height: 0;
+  text-indent: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100%;
+  font-size-adjust: none;
+  letter-spacing: normal;
+  border-collapse: collapse;
+  word-wrap: normal;
+  word-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  padding: 1px 0;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="CHTML"][display="true"][width="full"] {
+  display: flex;
+}
+
+mjx-container[jax="CHTML"][display="true"] mjx-math {
+  padding: 0;
+}
+
+mjx-container[jax="CHTML"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="CHTML"][justify="right"] {
+  text-align: right;
+}
+
+mjx-mi {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c {
+  display: inline-block;
+}
+
+mjx-utext {
+  display: inline-block;
+  padding: .75em 0 .2em 0;
+}
+
+mjx-mo {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-stretchy-h {
+  display: inline-table;
+  width: 100%;
+}
+
+mjx-stretchy-h > * {
+  display: table-cell;
+  width: 0;
+}
+
+mjx-stretchy-h > * > mjx-c {
+  display: inline-block;
+  transform: scalex(1.0000001);
+}
+
+mjx-stretchy-h > * > mjx-c::before {
+  display: inline-block;
+  width: initial;
+}
+
+mjx-stretchy-h > mjx-ext {
+  /* IE */ overflow: hidden;
+  /* others */ overflow: clip visible;
+  width: 100%;
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c::before {
+  transform: scalex(500);
+}
+
+mjx-stretchy-h > mjx-ext > mjx-c {
+  width: 0;
+}
+
+mjx-stretchy-h > mjx-beg > mjx-c {
+  margin-right: -.1em;
+}
+
+mjx-stretchy-h > mjx-end > mjx-c {
+  margin-left: -.1em;
+}
+
+mjx-stretchy-v {
+  display: inline-block;
+}
+
+mjx-stretchy-v > * {
+  display: block;
+}
+
+mjx-stretchy-v > mjx-beg {
+  height: 0;
+}
+
+mjx-stretchy-v > mjx-end > mjx-c {
+  display: block;
+}
+
+mjx-stretchy-v > * > mjx-c {
+  transform: scaley(1.0000001);
+  transform-origin: left center;
+  overflow: hidden;
+}
+
+mjx-stretchy-v > mjx-ext {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0px solid transparent;
+  /* IE */ overflow: hidden;
+  /* others */ overflow: visible clip;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c::before {
+  width: initial;
+  box-sizing: border-box;
+}
+
+mjx-stretchy-v > mjx-ext > mjx-c {
+  transform: scaleY(500) translateY(.075em);
+  overflow: visible;
+}
+
+mjx-mark {
+  display: inline-block;
+  height: 0px;
+}
+
+mjx-msub {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-mn {
+  display: inline-block;
+  text-align: left;
+}
+
+mjx-c::before {
+  display: block;
+  width: 0;
+}
+
+.MJX-TEX {
+  font-family: MJXZERO, MJXTEX;
+}
+
+.TEX-B {
+  font-family: MJXZERO, MJXTEX-B;
+}
+
+.TEX-I {
+  font-family: MJXZERO, MJXTEX-I;
+}
+
+.TEX-MI {
+  font-family: MJXZERO, MJXTEX-MI;
+}
+
+.TEX-BI {
+  font-family: MJXZERO, MJXTEX-BI;
+}
+
+.TEX-S1 {
+  font-family: MJXZERO, MJXTEX-S1;
+}
+
+.TEX-S2 {
+  font-family: MJXZERO, MJXTEX-S2;
+}
+
+.TEX-S3 {
+  font-family: MJXZERO, MJXTEX-S3;
+}
+
+.TEX-S4 {
+  font-family: MJXZERO, MJXTEX-S4;
+}
+
+.TEX-A {
+  font-family: MJXZERO, MJXTEX-A;
+}
+
+.TEX-C {
+  font-family: MJXZERO, MJXTEX-C;
+}
+
+.TEX-CB {
+  font-family: MJXZERO, MJXTEX-CB;
+}
+
+.TEX-FR {
+  font-family: MJXZERO, MJXTEX-FR;
+}
+
+.TEX-FRB {
+  font-family: MJXZERO, MJXTEX-FRB;
+}
+
+.TEX-SS {
+  font-family: MJXZERO, MJXTEX-SS;
+}
+
+.TEX-SSB {
+  font-family: MJXZERO, MJXTEX-SSB;
+}
+
+.TEX-SSI {
+  font-family: MJXZERO, MJXTEX-SSI;
+}
+
+.TEX-SC {
+  font-family: MJXZERO, MJXTEX-SC;
+}
+
+.TEX-T {
+  font-family: MJXZERO, MJXTEX-T;
+}
+
+.TEX-V {
+  font-family: MJXZERO, MJXTEX-V;
+}
+
+.TEX-VB {
+  font-family: MJXZERO, MJXTEX-VB;
+}
+
+mjx-stretchy-v mjx-c, mjx-stretchy-h mjx-c {
+  font-family: MJXZERO, MJXTEX-S1, MJXTEX-S4, MJXTEX, MJXTEX-A ! important;
+}
+
+@font-face /* 0 */ {
+  font-family: MJXZERO;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Zero.woff") format("woff");
+}
+
+@font-face /* 1 */ {
+  font-family: MJXTEX;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+}
+
+@font-face /* 2 */ {
+  font-family: MJXTEX-B;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Bold.woff") format("woff");
+}
+
+@font-face /* 3 */ {
+  font-family: MJXTEX-I;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-Italic.woff") format("woff");
+}
+
+@font-face /* 4 */ {
+  font-family: MJXTEX-MI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Main-Italic.woff") format("woff");
+}
+
+@font-face /* 5 */ {
+  font-family: MJXTEX-BI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Math-BoldItalic.woff") format("woff");
+}
+
+@font-face /* 6 */ {
+  font-family: MJXTEX-S1;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size1-Regular.woff") format("woff");
+}
+
+@font-face /* 7 */ {
+  font-family: MJXTEX-S2;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size2-Regular.woff") format("woff");
+}
+
+@font-face /* 8 */ {
+  font-family: MJXTEX-S3;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size3-Regular.woff") format("woff");
+}
+
+@font-face /* 9 */ {
+  font-family: MJXTEX-S4;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Size4-Regular.woff") format("woff");
+}
+
+@font-face /* 10 */ {
+  font-family: MJXTEX-A;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_AMS-Regular.woff") format("woff");
+}
+
+@font-face /* 11 */ {
+  font-family: MJXTEX-C;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Regular.woff") format("woff");
+}
+
+@font-face /* 12 */ {
+  font-family: MJXTEX-CB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Calligraphic-Bold.woff") format("woff");
+}
+
+@font-face /* 13 */ {
+  font-family: MJXTEX-FR;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Regular.woff") format("woff");
+}
+
+@font-face /* 14 */ {
+  font-family: MJXTEX-FRB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Fraktur-Bold.woff") format("woff");
+}
+
+@font-face /* 15 */ {
+  font-family: MJXTEX-SS;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Regular.woff") format("woff");
+}
+
+@font-face /* 16 */ {
+  font-family: MJXTEX-SSB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Bold.woff") format("woff");
+}
+
+@font-face /* 17 */ {
+  font-family: MJXTEX-SSI;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_SansSerif-Italic.woff") format("woff");
+}
+
+@font-face /* 18 */ {
+  font-family: MJXTEX-SC;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Script-Regular.woff") format("woff");
+}
+
+@font-face /* 19 */ {
+  font-family: MJXTEX-T;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Typewriter-Regular.woff") format("woff");
+}
+
+@font-face /* 20 */ {
+  font-family: MJXTEX-V;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Regular.woff") format("woff");
+}
+
+@font-face /* 21 */ {
+  font-family: MJXTEX-VB;
+  src: url("https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2/MathJax_Vector-Bold.woff") format("woff");
+}
+
+mjx-c.mjx-c1D43A.TEX-I::before {
+  padding: 0.705em 0.786em 0.022em 0;
+  content: "G";
+}
+
+mjx-c.mjx-c3D::before {
+  padding: 0.583em 0.778em 0.082em 0;
+  content: "=";
+}
+
+mjx-c.mjx-c28::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: "(";
+}
+
+mjx-c.mjx-c1D449.TEX-I::before {
+  padding: 0.683em 0.769em 0.022em 0;
+  content: "V";
+}
+
+mjx-c.mjx-c2C::before {
+  padding: 0.121em 0.278em 0.194em 0;
+  content: ",";
+}
+
+mjx-c.mjx-c1D438.TEX-I::before {
+  padding: 0.68em 0.764em 0 0;
+  content: "E";
+}
+
+mjx-c.mjx-c29::before {
+  padding: 0.75em 0.389em 0.25em 0;
+  content: ")";
+}
+
+mjx-c.mjx-c1D44F.TEX-I::before {
+  padding: 0.694em 0.429em 0.011em 0;
+  content: "b";
+}
+
+mjx-c.mjx-c31::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "1";
+}
+
+mjx-c.mjx-c32::before {
+  padding: 0.666em 0.5em 0 0;
+  content: "2";
+}
+</style></head>
+<body>
+<div style="display:none">
+<mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="0" style="font-size: 113.1%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"></math></mjx-assistive-mml></mjx-container>
+</div>
+<div style="font-size: 2em; width: 100%; background-color: #f5ec71; padding: 10px;">
+    <strong>NOTE:</strong> This is the archived 2020-21 version of these notes, and may be out of date. Current CSC110/111 students should visit the current notes page, <a href="https://www.teach.cs.toronto.edu/~csc110y/fall/notes/">https://www.teach.cs.toronto.edu/~csc110y/fall/notes/</a>.
+</div>
+<header id="title-block-header">
+<h1 class="title">15.7 Application: Control Flow Graphs</h1>
+</header>
+<section>
+<p>In this section, we’ll give a brief introduction to one of the applications of graphs to modelling computer programs. Back in <a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/14-abstract-syntax-trees/01-abstract-syntax-trees.html">Chapter 14</a>, you learned about <em>abstract syntax trees</em>, which we can use to represent program code. Now, we’re going to look at how to represent not just program code, but also the different possible <em>execution paths</em> through a program. This type of modelling is an extremely powerful tool, and is used by both code checking tools like PythonTA as well as compilers for various programming languages to generate efficient machine instructions from program code.</p>
+<h2 id="what-is-a-control-flow-graph">What is a control flow graph?</h2>
+<p>Intuitively, a control flow graph is a representation of the different blocks of code in a Python program, and the different paths that the Python interpreter can take through the code. To get a clearer sense of what this means, let’s introduce one foundational definition.</p>
+<div class="definition">
+<p>A <strong>basic block</strong> is a sequence of non-compound statements and expressions in a program’s code that are guaranteed to execute together, one after the other.</p>
+</div>
+<p>Here are some examples and non-examples of basic blocks.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-1" aria-hidden="true"></a><span class="co"># A single statement is a basic block.</span></span>
+<span id="cb1-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-2" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb1-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-3" aria-hidden="true"></a></span>
+<span id="cb1-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-4" aria-hidden="true"></a><span class="co"># A sequence of multiple statements and function calls is a basic block.</span></span>
+<span id="cb1-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-5" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb1-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-6" aria-hidden="true"></a>y <span class="op">=</span> x <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb1-7"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-7" aria-hidden="true"></a>z <span class="op">=</span> f(x, y)</span>
+<span id="cb1-8"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-8" aria-hidden="true"></a><span class="bu">print</span>(x <span class="op">+</span> y <span class="op">+</span> z)</span>
+<span id="cb1-9"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-9" aria-hidden="true"></a></span>
+<span id="cb1-10"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-10" aria-hidden="true"></a><span class="co"># A basic block can end with a return or raise statement.</span></span>
+<span id="cb1-11"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-11" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb1-12"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-12" aria-hidden="true"></a>y <span class="op">=</span> x <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb1-13"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-13" aria-hidden="true"></a><span class="cf">return</span> f(x, y)</span>
+<span id="cb1-14"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-14" aria-hidden="true"></a></span>
+<span id="cb1-15"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-15" aria-hidden="true"></a><span class="co"># But a sequence of statements with a return/raise in the middle is</span></span>
+<span id="cb1-16"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-16" aria-hidden="true"></a><span class="co"># NOT a basic block, since the statements after the return/raise aren't</span></span>
+<span id="cb1-17"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-17" aria-hidden="true"></a><span class="co"># going to execute.</span></span>
+<span id="cb1-18"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-18" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb1-19"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-19" aria-hidden="true"></a><span class="cf">return</span> x</span>
+<span id="cb1-20"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-20" aria-hidden="true"></a>y <span class="op">=</span> x <span class="op">+</span> <span class="dv">2</span>  <span class="co"># Will never execute!</span></span>
+<span id="cb1-21"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-21" aria-hidden="true"></a></span>
+<span id="cb1-22"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-22" aria-hidden="true"></a><span class="co"># An if statement is not a basic block, since it is a compound statement.</span></span>
+<span id="cb1-23"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-23" aria-hidden="true"></a><span class="co"># The statements it contains aren't guaranteed to execute one after the other.</span></span>
+<span id="cb1-24"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-24" aria-hidden="true"></a><span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb1-25"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-25" aria-hidden="true"></a>    y <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb1-26"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-26" aria-hidden="true"></a><span class="cf">else</span>:</span>
+<span id="cb1-27"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb1-27" aria-hidden="true"></a>    y <span class="op">=</span> <span class="dv">4</span></span></code></pre></div>
+<p>Typically we treat basic blocks as being <em>maximal</em>, i.e., as large as possible. So if we have a sequence of assignment statements (<code>x = 5</code>, <code>y = x + 2</code>, etc.), we treat them as one big block rather than consisting of multiple single-statement blocks.</p>
+<p>Now let’s look at that if statement example in more detail. We can divide it up into three basic blocks: one for the condition (<code>x &gt; 5</code>), then one for the if branch (<code>y = 3</code>) and one for the else branch (<code>y = 4</code>). When we first learned about if statements in <a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/03-logic/04-if-statements.html">Section 3.4</a>, we drew simple diagrams to show the possible ways the Python interpreter could take through our code. We can now formalize this idea, and extend it to other kinds of control flow statements like loop.</p>
+<div class="definition">
+<p>A <strong>control-flow graph (CFG) of a program</strong> is a graph <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="1" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D43A TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c3D"></mjx-c></mjx-mo><mjx-mo class="mjx-n" space="4"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D449 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-mi class="mjx-i" space="2"><mjx-c class="mjx-c1D438 TEX-I"></mjx-c></mjx-mi><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>G</mi><mo>=</mo><mo stretchy="false">(</mo><mi>V</mi><mo>,</mo><mi>E</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> where:</p>
+<ul>
+<li><p><span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="2" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D449 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>V</mi></math></mjx-assistive-mml></mjx-container></span> is the set of all (maximal) basic blocks in the program code, plus one special elements representing the <em>end</em> of a program.<label for="sn-0" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-0" class="margin-toggle"><span class="sidenote"> We typically restrict <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="3" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D449 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>V</mi></math></mjx-assistive-mml></mjx-container></span> to only include <em>reachable</em> basic blocks, i.e., code that can actually be executed at some point by the Python interpreter.</span></p></li>
+<li><p><span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="4" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D438 TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>E</mi></math></mjx-assistive-mml></mjx-container></span> is the set of edges, where:</p>
+<ul>
+<li>There is an edge from block <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="5" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container></span> to block <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="6" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>2</mn></msub></math></mjx-assistive-mml></mjx-container></span> if and only if the code in <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="7" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>2</mn></msub></math></mjx-assistive-mml></mjx-container></span> can be executed immediately after the code in <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="8" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container></span>.</li>
+<li>There is an edge from block <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="9" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container></span> to the special <em>end</em> block if and only if the the program can stop immediately after executing the code in block <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="10" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container></span>. This occurs if there is no code written after <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="11" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container></span>, or if <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="12" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></mjx-assistive-mml></mjx-container></span> ends in a <code>return</code> or <code>raise</code> statement.</li>
+</ul>
+<p>Unlike the graphs we’ve seen so far, a control flow graph’s edges are <strong>directed</strong>, meaning order matters! Formally, we can represent each edge as a <em>tuple</em> rather than a set, where <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="13" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msub><mi>b</mi><mn>1</mn></msub><mo>,</mo><msub><mi>b</mi><mn>2</mn></msub><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> means there’s an edge from <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="14" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>1</mn></msub></math></mjx-assistive-mml></mjx-container></span> to <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="15" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>b</mi><mn>2</mn></msub></math></mjx-assistive-mml></mjx-container></span>. This is different from the tuple <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="16" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msub><mi>b</mi><mn>2</mn></msub><mo>,</mo><msub><mi>b</mi><mn>1</mn></msub><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>—it is possible (and common) for an edge <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="17" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msub><mi>b</mi><mn>1</mn></msub><mo>,</mo><msub><mi>b</mi><mn>2</mn></msub><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span> to exist, but not <span class="math inline"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="CHTML" tabindex="0" ctxtmenu_counter="18" style="font-size: 94.5%; position: relative;"><mjx-math class="MJX-TEX" aria-hidden="true"><mjx-mo class="mjx-n"><mjx-c class="mjx-c28"></mjx-c></mjx-mo><mjx-msub><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c32"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c2C"></mjx-c></mjx-mo><mjx-msub space="2"><mjx-mi class="mjx-i"><mjx-c class="mjx-c1D44F TEX-I"></mjx-c></mjx-mi><mjx-script style="vertical-align: -0.15em;"><mjx-mn class="mjx-n" size="s"><mjx-c class="mjx-c31"></mjx-c></mjx-mn></mjx-script></mjx-msub><mjx-mo class="mjx-n"><mjx-c class="mjx-c29"></mjx-c></mjx-mo></mjx-math><mjx-assistive-mml unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mo stretchy="false">(</mo><msub><mi>b</mi><mn>2</mn></msub><mo>,</mo><msub><mi>b</mi><mn>1</mn></msub><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>.</p></li>
+</ul>
+<p>Because our edges are now directed, we will draw them using arrows rather than simple lines. Here are two examples of control flow graph diagrams.</p>
+<div class="reference-table fullwidth">
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Program code</th>
+<th>Control flow graph</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb2-1" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb2-2" aria-hidden="true"></a><span class="bu">print</span>(x)</span></code></pre></div></td>
+<td><img src="./15.7 Application_ Control Flow Graphs_files/simple.svg" style="vertical-align: top" alt="CFG diagram of simple program"><br>
+</td>
+</tr>
+<tr class="even">
+<td><div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-1" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb3-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-2" aria-hidden="true"></a><span class="bu">print</span>(x)</span>
+<span id="cb3-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-3" aria-hidden="true"></a><span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb3-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-4" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">'x is big'</span>)</span>
+<span id="cb3-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-5" aria-hidden="true"></a><span class="cf">else</span>:</span>
+<span id="cb3-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb3-6" aria-hidden="true"></a>    <span class="bu">print</span>(<span class="st">'x is small'</span>)</span></code></pre></div></td>
+<td><img src="./15.7 Application_ Control Flow Graphs_files/if-example.svg" style="vertical-align: top" alt="CFG diagram of if structure"><br>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>One subtlety with our second example is that the if condition <code>x &gt; 5</code> doesn’t appear in its own basic block! Instead, it’s merged with the previous block, since it is always executed immediately after the <code>print(x)</code> call. This illustrates what we mean by treating basic blocks as maximal: while we could have used a separate block for the <code>x &gt; 5</code>, it would have been redundant to do so.</p>
+<h2 id="while-loops">While loops</h2>
+<p>Next, let’s look at how a while loop is represented using a control flow graph. Here’s a simple example to start with:</p>
+<div class="reference-table fullwidth">
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Program code</th>
+<th>Control flow graph</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-1" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-2" aria-hidden="true"></a><span class="cf">while</span> x <span class="op">&lt;</span> <span class="dv">10</span>:</span>
+<span id="cb4-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-3" aria-hidden="true"></a>    <span class="bu">print</span>(x)</span>
+<span id="cb4-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-4" aria-hidden="true"></a>    x <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb4-6" aria-hidden="true"></a>y <span class="op">=</span> x <span class="op">+</span> <span class="dv">3</span></span></code></pre></div></td>
+<td><img src="./15.7 Application_ Control Flow Graphs_files/while-example.svg" style="vertical-align: top" alt="CFG diagram of while loop example."><br>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This diagram is a bit more compleicated than the one before. The while loop condition (<code>x &lt; 10</code>) is its own basic block, and has two different blocks that can execute after it: the body of the while loop and the statement after the loop (<code>y = x + 3</code>). After the body of the while loop executes, the while loop condition executes again, which is why there’s an edge from the basic block representing the loop body back to the loop condition.</p>
+<p>As we learned when deadling with abstract syntax tree, program code is naturally recursive: inside the body of the while loop, we aren’t just limited to simple statements. We can have compound statements like if statements, or evey other while loops. Here’s a second example program, and corresponding control flow graph:</p>
+<div class="reference-table fullwidth">
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Program code</th>
+<th>Control flow graph</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-1" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-2" aria-hidden="true"></a><span class="cf">while</span> x <span class="op">&lt;</span> <span class="dv">10</span>:</span>
+<span id="cb5-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-3" aria-hidden="true"></a>    <span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">5</span>:</span>
+<span id="cb5-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-4" aria-hidden="true"></a>        <span class="bu">print</span>(x)</span>
+<span id="cb5-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-5" aria-hidden="true"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-6" aria-hidden="true"></a>        <span class="bu">print</span>(<span class="st">'x less than 6'</span>)</span>
+<span id="cb5-7"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb5-7" aria-hidden="true"></a>    x <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div></td>
+<td><p><img src="./15.7 Application_ Control Flow Graphs_files/while-example2.svg" style="vertical-align: top" alt="CFG diagram of while loop example."><br>
+</p>
+<div class="line-block"></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The subgraph contained in the red region is a <em>subgraph</em> representing the loop body. If the while loop condition evaluates to True, then the program flow goes “into” this subgraph. Notice that the “end” of the body is represented by the basic block <code>x += 1</code> in the subgraph; after this point is reached, the while loop condition is executed again.</p>
+<!-- ## Control Flow Statements
+
+In Python, *break* and *continue* statements can alter the flow of the loop. These are useful because sometimes we wish to terminate the current iteration or even the whole loop without checking the while condition. Let's look how these statements alter the *while loop* control-flow graph:
+
+### Break Statement
+
+When the `break` statement is executed, the loop immediately terminates and the block of code after the while loop executes. This is represented by direct edge  from the basic block containing the `break` statement to the next basic block^[It is not hard to see that there can be only one.] in the program. Consider the same python program from the *while loop* section (excluding the *else body* with a `break` statement.
+
+*Python Program*
+
+```python
+x = 0
+while x < 10:
+    print(x)
+    break   # added line
+print('end of loop')
+```
+
+*Control-flow graph*^[Notice the CFG structure of this program is exactly like that of the *if statement* without the *else block*. This means that we can rewrite the same program using an *if statement* instead of a *while loop*.]
+
+![CFG diagram of if structure](images/break-example.svg)\
+
+This graph is similar to the the control-flow graph of the *while loop* example without the *else body*, except with two changes. Firstly, In the `while body`, the `break` statement is bound to be executed, and so the loop iterates only once. Hence the directed edge from the *while body* to the *test condition* is removed. Secondly, the next basic block after the while loop is executed right after the loop terminates. If the *while body* executes, then this happens right after the `break` statement is executed. Hence a directed edge (in red) from the *while body* to the first basic block outside of the loop is added.
+
+### Continue Statement
+
+When the `continue` statement is exectued, the current loop iteration immediately terminates and the while loop *test condition* is evaluated. This is represented by the directed edge from the basic block containing the `continue` statement to the *test condition block*. Consider the Python program from [Example 2](#example-2) of the while loop section with a `continue` statement instead of `print(x)` in the *if body*.
+
+*Python Program*
+
+```python
+x = 0
+while x < 10:
+    if x > 5:
+        continue    # instead of print(x)
+    else:
+        print('x less than 6')
+    x += 1
+```
+
+*Control-flow graph*
+
+![CFG diagram of if structure](images/continue-example.svg)\
+
+The only difference between this control-flow graph and [Example 2](#example-2) of the while loop section is that the *if block* now points to the loop *test condition* instead of the *x+=1 block*. Unlike previous examples, the *while body* subgraph has more than one leaf, the *continue block* and *x+=1 block*. -->
+<h2 id="return-statements">Return statements</h2>
+<p>Finally, let’s consider how return statements are represented in our control flow graphs. As we know, when a return statement is executed, the function body immediately terminates. This means that when a basic block contains a return statement, that block must have a single edge leaving it, that goes to the special vertex representing the end of the program. Here’s an example of a control flow graph for a function:</p>
+<div class="reference-table fullwidth">
+<table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Program code</th>
+<th>Control flow graph</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-1" aria-hidden="true"></a><span class="kw">def</span> f(x: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb6-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-2" aria-hidden="true"></a>    <span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">10</span>:</span>
+<span id="cb6-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-3" aria-hidden="true"></a>        <span class="cf">return</span></span>
+<span id="cb6-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-4" aria-hidden="true"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-5" aria-hidden="true"></a>        y <span class="op">=</span> x <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb6-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb6-6" aria-hidden="true"></a>    <span class="bu">print</span>(x <span class="op">*</span> y)</span></code></pre></div></td>
+<td><img src="./15.7 Application_ Control Flow Graphs_files/return.svg" style="vertical-align: top" alt="CFG diagram of function with return statement."><br>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!--
+## An aggregate example
+
+Up until now, we have been looking at simple programs and constructs like *if statement*, *while loops*, and *break*, *continue* statements. To understand the complexity and power that control-flow graphs give, we have to look at a complex program that comprises of all that we've seen so far.
+
+*Python Program*
+
+```python
+x = 0
+while x < 10:
+    if x == 5:
+        break
+    if x % 2 == 0:
+        continue
+    print('x is odd')
+    x += 3
+print(x)
+```
+
+*Control-flow graph*
+
+![CFG diagram of if structure](images/aggregate-example.svg)\ -->
+<h2 id="control-flow-graphs-and-pythonta">Control flow graphs and PythonTA</h2>
+<p>Now, control flow graphs are not merely of theoretical interest! Like abstract syntax trees, they are used as a form of static analysis when compiling program code or analysing it for errors. To wrap up this section, we’ll see how PythonTA itself uses control flow graphs to perform two different checks on your code.</p>
+<p>Tools like PythonTA that perform static analysis on python source code rely heavily on control-flow graphs for some of its checks. Let’s look at two checks PythonTA does, and understand how it uses control-flow graphs to reason about the code.</p>
+<h3 id="one-iteration-check">One iteration check</h3>
+<p>Here is a common error that students often make when implementing a search through a list:<label for="sn-1" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-1" class="margin-toggle"><span class="sidenote"> Even though we would normally implement this using a for loop, we’re using a while loop here to make the translation to control flow graphs easier.</span></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-1" aria-hidden="true"></a><span class="kw">def</span> has_even(numbers: <span class="bu">list</span>[<span class="bu">int</span>]) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb7-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-2" aria-hidden="true"></a>    <span class="co">"""Return whether numbers has an even number.</span></span>
+<span id="cb7-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-3" aria-hidden="true"></a><span class="co">    """</span></span>
+<span id="cb7-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-4" aria-hidden="true"></a>    i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-5" aria-hidden="true"></a>    <span class="cf">while</span> i <span class="op">&lt;</span> <span class="bu">len</span>(lst):</span>
+<span id="cb7-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-6" aria-hidden="true"></a>        <span class="cf">if</span> lst[i] <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb7-7"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-7" aria-hidden="true"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb7-8"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-8" aria-hidden="true"></a>        <span class="cf">else</span>:</span>
+<span id="cb7-9"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-9" aria-hidden="true"></a>            <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb7-10"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-10" aria-hidden="true"></a></span>
+<span id="cb7-11"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb7-11" aria-hidden="true"></a>        i <span class="op">+=</span> <span class="dv">1</span></span></code></pre></div>
+<p>Because the if statement inside the while loop has a return statement in both the if and else branches, this loop will only every run for one iteration, despite the <code>i += 1</code> at the bottom of the loop body. This means the return value will be based only on the first value in the list, rather than checking all items (in case an even number appears later in the list).<label for="sn-2" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-2" class="margin-toggle"><span class="sidenote"> There’s actually another bug, when the list is empty. We’re ignoring this bug here—one is enough!</span></p>
+<p>Let’s see how this problem manifests itself in a control flow graph. Here’s the control flow graph for the above function:</p>
+<div class="center">
+<p><img src="./15.7 Application_ Control Flow Graphs_files/one-iteration-simple.svg" alt="Control flow diagram of has_even."><br>
+</p>
+</div>
+<p>If you compare this to our control flow graph of the while loop example from above, something should jump out at you: none the basic blocks for the loop body connect back to the loop condition, and instead end at the “end block”. And this is how we know that there’s only going to be one iteration of the loop!</p>
+<p>In other words, we can reframe the question of whether a loop will always have a single iteration into a question about the corresponding control flow graph: is the basic block of the loop condition part of a <em>cycle</em> consisting of itself and the basic blocks representing the loop’s body? If we can find such a cycle, the loop can have more than one iteration (in at least some cases); if we can’t, then the loop is guaranteed to only execute for one iteration. This is actually the algorithm that PythonTA implements for its “one iteration” checker!</p>
+<h3 id="possibly-undefined-variable-check">Possibly undefined variable check</h3>
+<p>The second check we’ll study detects variables that many be used before they are defined. Consider, for example, the following Python code:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-1" aria-hidden="true"></a>x <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-2"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-2" aria-hidden="true"></a><span class="cf">if</span> is_special(x):</span>
+<span id="cb8-3"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-3" aria-hidden="true"></a>    x <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb8-4"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-4" aria-hidden="true"></a><span class="cf">else</span>:</span>
+<span id="cb8-5"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-5" aria-hidden="true"></a>    y <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb8-6"><a href="https://www.cs.toronto.edu/~david/course-notes/csc110-111/15-graphs/07-control-flow-graphs.html#cb8-6" aria-hidden="true"></a><span class="bu">print</span>(x <span class="op">+</span> y)</span></code></pre></div>
+<p>At the last line <code>print(x + y)</code>, the variable <code>y</code> might not be defined, if <code>is_special(x)</code> returns <code>True</code> and the if branch executes. Intuitively, a variable is <em>possibly undefined</em> when it is possible to execute the program and reach that variable being evaluated before it is assigned.</p>
+<p>Let’s see how we can represent this property using control flow graphs. Here’s a control flow graph for the above code.</p>
+<div class="center">
+<p><img src="./15.7 Application_ Control Flow Graphs_files/possibly-undefined-simple.svg" alt="Control flow graph for possibly undefeind variable example, with the path from the start node to the print(x + y) node highlighted."><br>
+</p>
+</div>
+<p>Our intuitive notion of “reaching a variable before it is assigned” is reflected in the control flow graph as a <em>path</em> from the starting basic block to the basic block calling <code>print(x + y)</code> that doesn’t contain any assignment statements to <code>y</code>. So in general, PythonTA checks for possibly undefined variables by searching the possible paths through the program’s control flow graph, looking for the existence of paths where a variable is used without an assignment statement for that variable occurring earlier in the path. Awesome!</p>
+</div></section>
+<footer>
+<a href="https://www.teach.cs.toronto.edu/~csc110y/fall/notes/">CSC110/111 Course Notes Home</a>
+</footer>
+
+
+</body></html>
