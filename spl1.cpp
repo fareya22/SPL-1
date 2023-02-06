@@ -98,8 +98,7 @@ bool isRealNumber(char* str)
 char* subString(char* str, int left, int right)
 {
     int i;
-    char* subStr = (char*)malloc(
-                  sizeof(char) * (right - left + 2));
+    char* subStr = (char*)malloc(sizeof(char) * (right - left + 2));
 
     for (i = left; i <= right; i++)
         subStr[i - left] = str[i];
@@ -108,7 +107,7 @@ char* subString(char* str, int left, int right)
 }
 
 // Parsing the input STRING.
-void parse(char* str)
+void parse( char * str)
 {
     int left = 0, right = 0;
     int len = strlen(str);
@@ -156,11 +155,8 @@ string read_Input_Code()
     FILE *fp;
 	string input_file, Orginal;
 	char ch;
-    string word;
-    vector<string>words;
 
-
-	fp = fopen( "Source_code.txt", "r" );
+	fp = fopen( "Sample.c", "r" );
 
 	if ( fp == NULL )
     {
@@ -173,14 +169,10 @@ string read_Input_Code()
             input_file = input_file + ch;
       }
 
-      Orginal = input_file;
- //     cout << "\n\n\t\t\tYour Input C Code:\n\n";
- //     cout <<  Orginal << "\n\n";
 
-      for ( int i = 0; i + 1 < input_file.size(); ++i ) {
+              for ( int i = 0; i + 1 < input_file.size(); ++i ) {
                  int start = i;
                  if ( input_file[ i ] == '/' && input_file[ i + 1 ] == '/' )
-
                 while ( i < input_file.size() && input_file[ i ] != '\n' )
                 {
                     i++;
@@ -222,9 +214,9 @@ string read_Input_Code()
                   start++;
             }
       }
-
-    // cout<< input_file;
   Orginal = input_file;
+  cout<<input_file<<endl;
+
  return input_file;
 }
 
@@ -232,14 +224,14 @@ string read_Input_Code()
 
 int main()
 {
-   string s1;
-    int totalLine =0;
-     s1 = read_Input_Code(); //cout<<s1;
-     const    char* c_str = s1.c_str();
-    int len=strlen(c_str);
-    char* s = new char[len+1];
-    strcpy(s,c_str);
-    parse(s);
+string s1;
+s1= read_Input_Code();
+const char * s2 = s1.c_str();
+char *s = new char[s1.size()+1];
+strcpy(s, s2);
+parse(s);
+
+    return 0;
 
 
 }
