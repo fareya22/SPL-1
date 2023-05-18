@@ -114,7 +114,7 @@ void edgeCreating( int SL, int EL )
     }
 }
 
-void scoping( int startLine, int endLine )
+void analyze( int startLine, int endLine )
 {
     stack < pair < int, string > > ss;
     pair < int, string > lastKeyword;
@@ -153,7 +153,7 @@ void scoping( int startLine, int endLine )
     }
 }
 
-int main()
+void cfg()
 {
     FILE *fp;
     string str;
@@ -186,10 +186,36 @@ int main()
         totalLine = max( totalLine, line );
      }
 
-    scoping( 1, totalLine );
+    analyze( 1, totalLine );
 
     edgeCreating( 1, totalLine );
 
     printGraph();
+
+
+  /*  vector<int>v1;
+    vector<int>v2;
+
+     for ( int i = 1; i <= totalLine; ++i )
+      {
+        for ( int j = 0; j < edge[ i ].size(); j++)
+        {
+            //cout <<" \t\t\t\t\t\t\t " << i << " " << edge[ i ][ j ] << "\n";
+            if(j%2==0){
+                v1.push_back(edge[ i ][ j ]);
+            }
+            else{
+                 v2.push_back(edge[ i ][ j ]);
+            }
+
+        }
+      }
+
+      for(int i=0;i<v1.size();i++){
+        if(v1[i]==v1[i+1]){
+            cout<<v1[i]<<"-->"<<v2[i]<<" "<<v2[i+1]<<"\n";
+
+        }
+      }*/
 }
 
