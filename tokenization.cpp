@@ -1,53 +1,195 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-struct eachlinestruct {
+struct eachlinestruct
+ {
     int line_no;
     string word;
 };
 
 eachlinestruct each_line[ 2000 ];
 
+bool isOperator( char ch )
+{
+    if (ch== '?')
+    {
+        return true;
+    }
+
+    else if(ch =='.')
+    {
+        return true;
+    }
+
+    else if(ch =='+')
+    {
+        return true;
+    }
+
+    else if (ch=='-')
+    {
+        return true;
+    }
+
+    else if (ch=='/')
+    {
+        return true;
+    }
+
+    else if (ch=='*')
+    {
+        return true;
+    }
+
+    else if (ch=='%')
+    {
+        return true;
+    }
+
+    else if (ch=='&')
+    {
+        return true;
+    }
+
+    else if (ch=='^')
+    {
+        return true;
+    }
+
+    else if (ch== '|')
+    {
+        return true;
+    }
+
+    else if(ch=='!')
+    {
+        return true;
+    }
+
+    else if (ch=='=')
+    {
+        return true;
+    }
+
+    else if (ch=='>')
+    {
+        return true;
+    }
+
+    else if (ch == '<')
+    {
+        return true;
+    }
+
+    else if (ch == ',')
+    {
+        return true;
+    }
+
+    else if (ch == '(')
+    {
+        return true;
+    }
+
+    else if (ch == ')')
+    {
+        return true;
+    }
+
+    else if (ch == '{')
+    {
+        return true;
+    }
+
+    else if (ch == '}')
+    {
+        return true;
+    }
+
+    else if (ch == '[')
+    {
+        return true;
+    }
+
+    else if (ch == ']')
+    {
+        return true;
+    }
+
+    else if (ch == '#')
+    {
+        return true;
+    }
+
+    else if (ch == ':')
+    {
+        return true;
+    }
+
+    else if (ch == ';')
+    {
+        return true;
+    }
+
+    else
+    {
+        return false;
+    }
+}
+
+
+bool checkArithmaticOperator( char ch )
+{
+     if ( ch == '+')
+    {
+        return true;
+    }
+    else if(ch == '-')
+    {
+        return true;
+    }
+
+    else if(ch == '&')
+    {
+        return true;
+    }
+
+    else if(ch == '|')
+    {
+        return true;
+    }
+
+    else if(ch == '=')
+    {
+        return true;
+    }
+    else if(ch == '>')
+    {
+        return true;
+    }
+
+    else if(ch == '<')
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 bool isDigit( char ch )
 {
     return ch >= '0' && ch <= '9';
 }
 
-bool isOperator( char ch )
-{
-    if (  ch == '{' || ch == '}' ||
-        ch == '[' || ch == ']' ||
-        ch == '(' || ch == ')' ||
-        ch == '#' || ch == ';' ||
-        ch == ':' || ch == '?' ||
-        ch == '+' || ch == '-' ||
-        ch == '*' || ch == '/' ||
-        ch == '%' || ch == '^' ||
-        ch == '&' ||ch ==  '|' ||
-        ch == '!' || ch == '=' ||
-        ch == '<' || ch == '>' ||
-        ch == ',' ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-bool checkOperator( char ch )
-{
-    if ( ch == '+' || ch == '-' || ch == '&' || ch == '|' || ch == '=' || ch == '>' || ch == '<' ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 bool isInteger( string check )
 {
-    for ( int i = 0; i <check.size(); ++i ) {
-        if ( !isDigit( check[ i ] ) ) {
+    for ( int i = 0; i <check.size(); ++i )
+    {
+        if ( !isDigit( check[ i ] ) )
+        {
                 return false;
         }
     }
@@ -59,15 +201,19 @@ bool isDouble( string check )
 {
     int dot = 0;
 
-    for ( int i = 0; i < check.size(); ++i ) {
-        if ( isDigit( check[ i ] ) ) {
+    for ( int i = 0; i < check.size(); ++i )
+    {
+        if ( isDigit( check[ i ] ) )
+        {
                 continue;
         }
 
-        if ( check[ i ] == '.' ) {
+        if ( check[ i ] == '.' )
+        {
                 dot++;
         }
-        else {
+        else
+        {
                 return false;
         }
     }
@@ -76,59 +222,79 @@ bool isDouble( string check )
 }
 
 
-string PrintString( string item, int l, int col )
+string PrintString( string item, int line, int column )
 {
-    string toReal;
+    string toToken;
 
-    if ( isInteger( item ) ) {
-        toReal = "integer\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
-        toReal += to_string( col - ( item.size() ) + 1 ) + "\n";
-    }
-    else if ( isDouble( item ) ) {
-        toReal = "double\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
-        toReal +=  to_string( col - ( item.size() ) + 1 ) + "\n";
-    }
-    else {
-        toReal = "identifier\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
+   /* if(item=="#include"){
+        toReal = "Header_File\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
         toReal += to_string( col - ( item.size() ) + 1 ) + "\n";
     }
 
-    return toReal;
+     else if(item=="main"){
+        toReal = "main_func\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
+        toReal += to_string( col - ( item.size() ) + 1 ) + "\n";
+    }*/
+
+     if ( isInteger( item ) )
+    {
+        toToken = "integer\t" + item + "\t" + to_string( each_line[ line].line_no ) + "\t";
+        toToken += to_string( column - ( item.size() ) + 1 ) + "\n";
+    }
+    else if ( isDouble( item ) )
+    {
+        toToken = "double\t" + item + "\t" + to_string( each_line[ line ].line_no ) + "\t";
+        toToken +=  to_string( column - ( item.size() ) + 1 ) + "\n";
+    }
+    else
+    {
+        toToken = "identifier\t" + item + "\t" + to_string( each_line[ line ].line_no ) + "\t";
+        toToken += to_string( column - ( item.size() ) + 1 ) + "\n";
+    }
+
+    return toToken;
 }
 
-string keyword_Identifier( int l, int col, string &item )
+string keyword_Identifier( int line, int column, string &item )
 {
-    if ( item.size() == 0 ) {
+    if ( item.size() == 0 )
+    {
         return "";
     }
 
-    string keywords[50] = {     "auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else",
-                                                    "extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short",
-                                                    "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while"
-                                         };
+    string keywords[50] = {     "auto", "break", "case", "char", "const", "continue", "default", "do",
+                                                   "double", "else","float", "for", "goto", "if", "int", "long",  "switch",
+                                                    "return", "short","signed", "sizeof", "static", "struct",
+                                                    "typedef", "unsigned", "void", "while"
+                                             };
 
-    for ( int k = 0; k < 50; k++ ) {
-        if ( item.compare( keywords[ k ] ) == 0 ) {
-                string toR = "keyword\t" + item + "\t" + to_string( each_line[ l ].line_no ) + "\t";
-                toR += to_string( col - ( item.size() ) + 1 ) + "\n";
+    for ( int k = 0; k < 50; k++ )
+        {
+          if ( item.compare( keywords[ k ] ) == 0 )
+          {
+                string toToken = "keyword\t" + item + "\t" + to_string( each_line[ line ].line_no ) + "\t";
+                toToken += to_string( column - ( item.size() ) + 1 ) + "\n";
                 item = "";
-                return toR;
+                return toToken;
         }
     }
 
-    string toR = PrintString( item, l, col );
+    string toToken = PrintString( item, line, column );
 
     item = "";
-    return toR;
+    return toToken;
 }
 
-int inputCodeInLineByLine( string inputFile )
+
+
+int codeLine( string inputFile )
 {
     int totalLine = 0;
     string part;
 
     stringstream X( inputFile );
-    while ( getline( X, part, '\n' ) ) {
+    while ( getline( X, part, '\n' ) )
+    {
         each_line[ totalLine ].word = part + " ";
         each_line[ totalLine++ ].line_no = totalLine;
     }
@@ -141,43 +307,50 @@ void tokenization( int totalLine )
     ofstream file( "TokenFile.txt" );
     string word;
 
-    for ( int i = 0; i < totalLine; i++ ) {
-        int length_per_line = each_line[ i ].word.size();
+    for ( int i = 0; i < totalLine; i++ )
+        {
+        int length_per_token = each_line[ i ].word.size();
 
-        for ( int j = 0; j < length_per_line; ) {
-            if ( isOperator( each_line[ i ].word[ j ] ) && checkOperator( each_line[ i ].word[ j + 1 ] ) ) {
-                string toR = keyword_Identifier( i, j, word );
-                file << toR;
-
+        for ( int j = 0; j < length_per_token; )
+        {
+            if ( isOperator( each_line[ i ].word[ j ] ) && checkArithmaticOperator( each_line[ i ].word[ j + 1 ] ) )
+            {
+                string tokenInfo = keyword_Identifier( i, j, word );
+                file << tokenInfo;
                 file << "operator\t" << each_line[ i ].word[ j ] << each_line[ i ].word[ j + 1 ] << "\t";
                 file << each_line[ i ].line_no << "\t" << j + 1 << "\n";
                 j += 2;
             }
-            else if ( isOperator( each_line[ i ].word[ j ] ) ) {
-                string toR = keyword_Identifier( i, j, word );
-                file << toR;
+
+            else if ( isOperator( each_line[ i ].word[ j ] ) )
+            {
+                string tokenInfo = keyword_Identifier( i, j, word );
+                file << tokenInfo;
 
                 file << "operator\t" << each_line[ i ].word[ j ] << "\t";
                 file << each_line[ i ].line_no << "\t" << j + 1 << "\n";
                 j += 1;
             }
-            else if ( each_line[ i ].word[ j ] == '\\' ) {
-                string toR = keyword_Identifier( i, j, word );
-                file << toR;
+            else if ( each_line[ i ].word[ j ] == '\\' )
+            {
+                string tokenInfo = keyword_Identifier( i, j, word );
+                file << tokenInfo;
 
                 file << "character\t" << each_line[ i ].word[ j ] << each_line[ i ].word[ j + 1 ] << "\t";
                 file << each_line[ i ].line_no << "\t" << j + 1 << "\n";
                 j += 2;
             }
-            else if ( each_line[ i ].word[ j ] == '"' ) {
-                string toR = keyword_Identifier( i, j, word );
-                file << toR;
+            else if ( each_line[ i ].word[ j ] == '"' )
+                {
+                string tokenInfo = keyword_Identifier( i, j, word );
+                file << tokenInfo;
 
                 j++;
                 int temp = j;
                 string strg;
 
-                while ( each_line[ i ].word[ j ] != '"' ) {
+                while ( each_line[ i ].word[ j ] != '"' )
+                {
                         strg = strg + each_line[ i ].word[ j ];
                         j++;
                 }
@@ -186,13 +359,15 @@ void tokenization( int totalLine )
                 file << "string\t" << strg  << "\t";
                 file << each_line[ i ].line_no << "\t" << temp + 1 << "\n";
             }
-            else if ( each_line[ i ].word[ j ] == ' ' || each_line[ i ].word[ j ] == '\n' ) {
-                string toR = keyword_Identifier( i, j, word );
-                file << toR;
+            else if ( each_line[ i ].word[ j ] == ' ' || each_line[ i ].word[ j ] == '\n' )
+            {
+                string tokenInfo = keyword_Identifier( i, j, word );
+                file << tokenInfo;
 
                 j++;
             }
-            else {
+            else
+            {
                 word = word + each_line[ i ].word[ j++ ];
             }
         }
@@ -201,52 +376,62 @@ void tokenization( int totalLine )
     file.close();
 }
 
-string readInputCode()
+
+string commentsRemoval()
 {
     FILE *fp;
 	string inputFile, orginal;
 	char ch;
 
-	fp = fopen( "enfa.cpp", "r" );
+	fp = fopen( "raw1.cpp", "r" );
 
-	if ( fp == NULL ){
+	if ( fp == NULL )
+    {
 		printf( "Error while opening the input file\n" );
 		exit( 0 );
 	}
 
-	while ( ( ch = fgetc( fp ) ) != EOF ) {
+	while ( ( ch = fgetc( fp ) ) != EOF )
+    {
         inputFile = inputFile + ch;
     }
 
     orginal = inputFile;
     cout << "\n\n\t\t\tYour Input C Code:\n\n";
-    cout <<  orginal << "\n\n";
+    //cout <<  original << "\n\n";
 
-    for ( int i = 0; i + 1 < (int) inputFile.size(); ++i ) {
+    for ( int i = 0; i + 1 < (int) inputFile.size(); ++i )
+    {
         int begining = i;
-        if ( inputFile[ i ] == '/' && inputFile[ i + 1 ] == '/' ) {
-                while ( i < (int) inputFile.size() && inputFile[ i ] != '\n' ) {
+        if ( inputFile[ i ] == '/' && inputFile[ i + 1 ] == '/' )
+         {
+                while ( i < (int) inputFile.size() && inputFile[ i ] != '\n' )
+                {
                     i++;
                 }
 
                 i--;
         }
 
-        if ( inputFile[ i ] == '/' && inputFile[ i + 1 ] == '*' ) {
-                while ( i + 1 < (int) inputFile.size() && ( inputFile[ i ] != '*' || inputFile[ i + 1 ] != '/' ) ) {
+        if ( inputFile[ i ] == '/' && inputFile[ i + 1 ] == '*' )
+            {
+                while ( i + 1 < (int) inputFile.size() && ( inputFile[ i ] != '*' || inputFile[ i + 1 ] != '/' ) )
+                {
                     i++;
                 }
 
-                if ( i + 1 == (int) inputFile.size() && ( inputFile[ i ] != '*' || inputFile[ i + 1 ] != '/' ) ) {
+                if ( i + 1 == (int) inputFile.size() && ( inputFile[ i ] != '*' || inputFile[ i + 1 ] != '/' ) )
+                {
                     int lineNumberCount = 1;
 
                     for ( int j = 0; j < begining; ++j ) {
-                            if ( orginal[ j ] == '\n' ) {
+                            if ( orginal[ j ] == '\n' )
+                            {
                                 lineNumberCount++;
                             }
                     }
 
-                    cout << "\n\n*** Unterminated comment issue on Line Number - " << lineNumberCount << "\n";
+                    cout << "\n\nError occured!!" << lineNumberCount << "\n";
 
                     exit( 0 );
                 }
@@ -254,19 +439,24 @@ string readInputCode()
                 i++;
         }
 
-        if ( begining == i ) {
+        if ( begining == i )
+        {
                 continue;
         }
 
-        while ( begining <= i ) {
-                if ( inputFile[ begining ] != '\n' ) {
+        while ( begining <= i )
+
+        {
+                if ( inputFile[ begining ] != '\n' )
+                {
                     inputFile[ begining ] = ' ';
                 }
 
                 begining++;
         }
+       // cout<<begining;
     }
-
+    cout<<inputFile;
     return inputFile;
 }
 
@@ -274,12 +464,14 @@ void sourceCodeMakeToken()
 {
     string codeText;
 
-	codeText = readInputCode();
-	int total_line = inputCodeInLineByLine( codeText );
+	codeText = commentsRemoval();
+	//start(codeText);
+	int total_line = codeLine( codeText );
     tokenization( total_line );
 }
 
 int main()
+//void tokenizationCall()
 {
     sourceCodeMakeToken();
 }
